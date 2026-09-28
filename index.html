@@ -242,7 +242,7 @@
 <div class="card"><div class="label">المستأجرون</div><div class="value" id="dTenants">0</div></div>
 <div class="card"><div class="label">المكاتب</div><div class="value" id="dOffices">0</div></div>
 <div class="card"><div class="label">العقود النشطة</div><div class="value" id="dContracts">0</div></div>
-<div class="card"><div class="label">استحقاقات قادمة 30 يوم</div><div class="value" id="dDue">0</div></div>
+<div class="card"><div class="label">استحقاقات قادمة 3 شهور</div><div class="value" id="dDue">0</div></div>
 <div class="card"><div class="label">رصيد المستأجرين</div><div class="value num" id="dBalance">0</div></div>
 <div class="card"><div class="label">إجمالي العقود النشطة</div><div class="value num" id="dActiveValue">0</div></div>
 <div class="card"><div class="label">عقود اما فؤاد حيدر</div><div class="value" id="dFouadH">0</div></div>
@@ -252,7 +252,7 @@
 <div class="panel"><h3>أقرب الدفعات المستحقة</h3><div id="dashDue"></div></div>
 <div class="panel"><h3>التحصيل الشهري</h3><div class="chart" id="chart"></div></div>
 </div>
-<div class="panel"><h3>العقود التي تنتهي خلال 30 يوم</h3><div id="dashExpiry"></div></div><div class="row2"><div class="panel"><h3>المبالغ المحصلة حسب السنوات</h3><div id="yearlyCollected"></div></div><div class="panel"><h3>المبالغ المحصلة حسب الشهور</h3><div id="monthlyCollected"></div></div></div>
+<div class="panel"><h3>العقود التي تنتهي خلال 3 شهور</h3><div id="dashExpiry"></div></div><div class="row2"><div class="panel"><h3>المبالغ المحصلة حسب السنوات</h3><div id="yearlyCollected"></div></div><div class="panel"><h3>المبالغ المحصلة حسب الشهور</h3><div id="monthlyCollected"></div></div></div>
 </div>
 </section>
 
@@ -331,6 +331,7 @@ function rebuildAccounting(){db.journals=db.journals.filter(j=>!j.sourceType||![
 function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
 function openModal(t,b){$("modalTitle").textContent=t;$("modalBody").innerHTML=b;$("modal").classList.add("open")}
 function closeModal(){$("modal").classList.remove("open")}
+function finishSave(message="تم الحفظ بنجاح"){save();closeModal();if(message)alert(message)}
 function tenant(id){return db.tenants.find(x=>String(x.id)===String(id))}
 function contract(id){return db.contracts.find(x=>String(x.id)===String(id))}
 function base(c){return (+c.rent||0)+(+c.services||0)+(+c.contractFee||0)}
@@ -471,14 +472,18 @@ function initDuePeriod(){if($("dueFrom")&&!$("dueFrom").value){let f=today(),d=n
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(b.dataset.page).classList.add("active");$("title").textContent=b.textContent.replace(/^[^\\p{L}\\p{N}]+/u,"");renderAll()});
 function renderDashboard(){
 $("dTenants").textContent=db.tenants.length;$("dOffices").textContent=db.offices.length;$("dContracts").textContent=db.contracts.filter(c=>!c.end||days(c.end)>=0).length;
-let upcoming=allDue().filter(x=>days(x.date)>=0&&days(x.date)<=30);$("dDue").textContent=upcoming.length;
+let dashboardThreeMonths=new Date();
+dashboardThreeMonths.setMonth(dashboardThreeMonths.getMonth()+3);
+let dashboardThreeMonthsDate=dashboardThreeMonths.toISOString().slice(0,10);
+let upcoming=allDue().filter(x=>x.date>=today()&&x.date<=dashboardThreeMonthsDate&&state(x)!=="محصل");
+$("dDue").textContent=upcoming.length;
 let balances=db.tenants.reduce((s,t)=>s+tenantBalance(t.id),0);$("dBalance").textContent=money(balances);
 let activeContracts=db.contracts.filter(c=>!c.end||days(c.end)>=0);
 $("dActiveValue").textContent=money(activeContracts.reduce((s,c)=>s+base(c)+(Number(c.vat)||0),0));
 $("dFouadH").textContent=activeContracts.filter(c=>c.executor==="اما فؤاد حيدر").length;
 $("dMohamedF").textContent=activeContracts.filter(c=>c.executor==="محمد فؤاد").length;
-$("dashDue").innerHTML=upcoming.slice(0,10).map(x=>`<div class="kpi"><span>${esc(x.date)} — ${esc(x.tenant)} — دفعة ${x.no}</span><b>${money(x.total)}</b></div>`).join("")||"لا توجد استحقاقات خلال 30 يومًا";
-let ex=db.contracts.filter(c=>c.end&&days(c.end)>=0&&days(c.end)<=30).slice(0,20);$("dashExpiry").innerHTML=ex.map(c=>`<div class="kpi"><span>${esc(c.tenant)} — ${esc(c.no)} — ${c.end}</span><button class="btn orange" onclick="extendContract(${c.id})">تمديد</button></div>`).join("")||"لا توجد عقود تنتهي خلال 30 يوم";
+$("dashDue").innerHTML=upcoming.slice(0,15).map(x=>`<div class="kpi"><span>${esc(x.date)} — ${esc(x.tenant)} — دفعة ${x.no}</span><b>${money(x.total-collectedFor(x))}</b></div>`).join("")||"لا توجد استحقاقات خلال الثلاثة أشهر القادمة";
+let ex=db.contracts.filter(c=>c.end&&c.end>=today()&&c.end<=dashboardThreeMonthsDate).slice(0,20);$("dashExpiry").innerHTML=ex.map(c=>`<div class="kpi"><span>${esc(c.tenant)} — ${esc(c.no)} — ${c.end}</span><button class="btn orange" onclick="extendContract(${c.id})">تمديد</button></div>`).join("")||"لا توجد عقود تنتهي خلال الثلاثة أشهر القادمة";
 let m={};db.receipts.forEach(r=>{let k=(r.date||"").slice(0,7);if(k)m[k]=(m[k]||0)+Number(r.amount||0)});let a=Object.entries(m).sort().slice(-8),mx=Math.max(1,...a.map(x=>x[1]));$("chart").innerHTML=a.map(([k,v])=>`<div class="bar" style="height:${Math.max(8,v/mx*140)}px"><small>${k}<br>${money(v)}</small></div>`).join("")||"لا توجد عمليات تحصيل";
 let yrs={};db.receipts.forEach(r=>{let y=(r.date||"").slice(0,4);if(y)yrs[y]=(yrs[y]||0)+Number(r.amount||0)});$("yearlyCollected").innerHTML=Object.entries(yrs).sort((a,b)=>b[0].localeCompare(a[0])).map(([y,v])=>`<div class="kpi"><span>سنة ${y}</span><b>${money(v)}</b></div>`).join("")||"لا توجد عمليات تحصيل مسجلة";
 $("monthlyCollected").innerHTML=Object.entries(m).sort((a,b)=>b[0].localeCompare(a[0])).map(([y,v])=>`<div class="kpi"><span>${y}</span><b>${money(v)}</b></div>`).join("")||"لا توجد عمليات تحصيل مسجلة";
@@ -507,7 +512,7 @@ let before=0;
 const inRange=d=>(!from||d>=from)&&(!to||d<=to);
 const addRow=r=>{if(inRange(r.date))rows.push(r);else if(from&&r.date<from)before+=r.debit-r.credit;};
 
-// كل دفعة إيجار تظهر مستقلة، ورسوم العقد تظهر في سطر مستقل ولا تدخل داخل سطر الدفعة.
+// كل دفعة إيجار تظهر مستقلة، ورسوم العقد تظهر كحركة مدينة مستقلة وتزيد رصيد المستأجر مرة واحدة.
 db.contracts.filter(c=>c.tenantId==id).forEach(c=>{
   let fee=+c.contractFee||0;
   let feeDate=c.start||today();
@@ -605,7 +610,7 @@ let t=tenant($("cTenant").value),c=id?contract(id):null,n=Math.max(1,Math.min(10
 if(!$("cStart").value||!$("cEnd").value||!dates.length)return alert("أدخل بداية ونهاية العقد وتاريخ استحقاق واحد على الأقل");
 let obj={id:c?.id||Date.now(),no:$("cNo").value||("CTR-"+Date.now()),tenant:t.name,tenantId:t.id,office:$("cOffice").value,start:$("cStart").value,end:$("cEnd").value,rent:+$("cRent").value||0,services:+$("cServices").value||0,contractFee:+$("cContractFee").value||0,vat:+$("cVat").value||0,executor:$("cExecutor").value,installments:dates.map(d=>({date:d}))};
 if(id)db.contracts[db.contracts.findIndex(x=>x.id==id)]=obj;else db.contracts.push(obj);
-rebuildContractMovements(obj);rebuildAccounting();save();closeModal();alert("تم حفظ العقد وإنشاء الاستحقاقات والفواتير والقيود تلقائيًا")}
+rebuildContractMovements(obj);rebuildAccounting();finishSave("تم حفظ العقد وإنشاء الاستحقاقات والفواتير والقيود تلقائيًا")}
 function rebuildContractMovements(c){
 db.invoices=db.invoices.filter(i=>i.contractId!=c.id);
 let b=base(c),v=+$("cVat")?.value||c.vat||0;
@@ -613,7 +618,7 @@ c.installments.forEach((x,i)=>{let ib=(+c.rent||0)+(+c.services||0)+(i===0?(+c.c
 }
 function extendContract(id){
 let c=contract(id);openModal("تمديد العقد — "+esc(c.no),`<div class="form"><label>بداية التمديد<input id="eStart" type="date" value="${c.end}"></label><label>نهاية التمديد<input id="eEnd" type="date"></label><div class="full"><b>تواريخ الدفعات الجديدة</b><div class="inst">${Array.from({length:10},(_,i)=>`<div class="instbox"><label>الدفعة ${i+1}<input id="ei${i}" type="date"></label></div>`).join("")}</div></div><div class="full"><button class="btn orange" onclick="saveExtension(${id})">حفظ التمديد</button></div></div>`)}
-function saveExtension(id){let c=contract(id),dates=Array.from({length:10},(_,i)=>$("ei"+i).value).filter(Boolean);if(!$("eEnd").value||!dates.length)return alert("أدخل نهاية التمديد وتواريخ الاستحقاق");c.start=$("eStart").value;c.end=$("eEnd").value;c.installments=dates.map(d=>({date:d}));rebuildContractMovements(c);save();closeModal()}
+function saveExtension(id){let c=contract(id),dates=Array.from({length:10},(_,i)=>$("ei"+i).value).filter(Boolean);if(!$("eEnd").value||!dates.length)return alert("أدخل نهاية التمديد وتواريخ الاستحقاق");c.start=$("eStart").value;c.end=$("eEnd").value;c.installments=dates.map(d=>({date:d}));rebuildContractMovements(c);finishSave("تم حفظ التمديد وإغلاق شاشة الإدخال")}
 function receiptDue(cid,no){let x=dueFor(contract(cid)).find(x=>x.no==no);if(!x)return;let remaining=Math.max(0,x.total-collectedFor(x));newReceipt({...x,remaining,installmentNo:x.no})}
 function newReceipt(p=null){
 if(!db.tenants.length)return alert("أضف مستأجرًا أولًا");
@@ -621,7 +626,7 @@ let amount=p?.remaining??p?.total??"";
 window.currentReceiptInstallmentNo=p?.installmentNo||p?.no||null;
 let period=p?.periodEnd?`دفعة الإيجار خالص من ${p.periodStart} إلى ${p.periodEnd}`:"";
 openModal("سند قبض",`<div class="form"><label>المستأجر<select id="rTenant">${tenantOptions(p?.tenantId)}</select></label><label>العقد<select id="rContract">${db.contracts.map(c=>`<option value="${c.id}" ${p&&c.id==p.contractId?"selected":""}>${esc(c.no)} — ${esc(c.tenant)}</option>`).join("")}</select></label><label>تاريخ التحصيل<input id="rDate" type="date" value="${today()}"></label><label>المبلغ<input id="rAmount" type="number" value="${amount}"></label><label>طريقة الدفع<select id="rMethod"><option>تحويل بنكي</option><option>شبكة</option><option>نقدي</option></select></label><label>البيان<input id="rNote" value="${esc(period)}"></label><label class="full">صورة التحويل / إيصال الدفع<input id="rImage" type="file" accept="image/*"></label><div class="full"><small class="muted">الصورة تُحفظ داخل سند القبض ويمكن فتحها في أي وقت.</small></div><div class="full"><button class="btn green" onclick="saveReceipt()">حفظ التحصيل</button></div></div>`)}
-async function saveReceipt(){let t=tenant($("rTenant").value),c=contract($("rContract").value),r={id:Date.now(),no:"RC-"+Date.now(),date:$("rDate").value,tenantId:t.id,tenant:t.name,contractId:c?.id,installmentNo:window.currentReceiptInstallmentNo||null,amount:+$("rAmount").value||0,method:$("rMethod").value,note:$("rNote").value,image:""};if(!r.amount)return alert("أدخل مبلغ التحصيل");let f=$("rImage")?.files?.[0];if(f)r.image=await fileToDataURL(f);db.receipts.push(r);rebuildAccounting();window.currentReceiptInstallmentNo=null;save();closeModal()}
+async function saveReceipt(){let t=tenant($("rTenant").value),c=contract($("rContract").value),r={id:Date.now(),no:"RC-"+Date.now(),date:$("rDate").value,tenantId:t.id,tenant:t.name,contractId:c?.id,installmentNo:window.currentReceiptInstallmentNo||null,amount:+$("rAmount").value||0,method:$("rMethod").value,note:$("rNote").value,image:""};if(!r.amount)return alert("أدخل مبلغ التحصيل");let f=$("rImage")?.files?.[0];if(f)r.image=await fileToDataURL(f);db.receipts.push(r);rebuildAccounting();window.currentReceiptInstallmentNo=null;finishSave("تم حفظ سند القبض والتحصيل وإغلاق شاشة الإدخال")}
 function viewReceiptImage(id){let r=db.receipts.find(x=>x.id==id);if(!r?.image)return alert("لا توجد صورة مرفقة لهذا السند");openModal("صورة سند القبض",`<div style="text-align:center"><img src="${r.image}" style="max-width:100%;max-height:70vh;border-radius:12px;border:1px solid var(--line);box-shadow:0 8px 25px #0002"><div style="margin-top:12px"><b>${esc(r.no)}</b> — ${esc(r.date)} — ${money(r.amount)}</div></div>`)}
 function fileToDataURL(file){return new Promise((resolve,reject)=>{let fr=new FileReader();fr.onload=()=>resolve(fr.result);fr.onerror=reject;fr.readAsDataURL(file)})}
 function newExpense(){openModal("سند صرف",`<div class="form"><label>التاريخ<input id="xDate" type="date" value="${today()}"></label><label>الحساب<select id="xAccount">${db.accounts.filter(a=>a.type==="مصروف").map(a=>`<option value="${a.code}">${a.code} — ${esc(a.name)}</option>`).join("")}</select></label><label>المبلغ<input id="xAmount" type="number"></label><label>البيان<input id="xNote"></label><div class="full"><button class="btn primary" onclick="saveExpense()">حفظ</button></div></div>`)}
