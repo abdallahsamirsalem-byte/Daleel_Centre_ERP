@@ -242,7 +242,7 @@
 <div class="card"><div class="label">المستأجرون</div><div class="value" id="dTenants">0</div></div>
 <div class="card"><div class="label">المكاتب</div><div class="value" id="dOffices">0</div></div>
 <div class="card"><div class="label">العقود النشطة</div><div class="value" id="dContracts">0</div></div>
-<div class="card"><div class="label">استحقاقات قادمة 3 شهور</div><div class="value" id="dDue">0</div></div>
+<div class="card"><div class="label">الاستحقاقات والمتأخرات حتى 3 شهور</div><div class="value" id="dDue">0</div></div>
 <div class="card"><div class="label">رصيد المستأجرين</div><div class="value num" id="dBalance">0</div></div>
 <div class="card"><div class="label">إجمالي العقود النشطة</div><div class="value num" id="dActiveValue">0</div></div>
 <div class="card"><div class="label">عقود اما فؤاد حيدر</div><div class="value" id="dFouadH">0</div></div>
@@ -267,9 +267,9 @@
 <section id="contracts" class="page"><h2>العقود</h2><div class="toolbar"><button class="btn gray" onclick="printSection('contracts','العقود')">🖨️ طباعة</button></div>
 <div class="alert good">العقد هو مصدر الاستحقاقات. عند حفظ العقد يتم إنشاء دفعات الاستحقاق تلقائيًا حسب التواريخ التي تدخلها، بحد أقصى ١٠ دفعات، والضريبة ورسوم العقد تدخل يدويًا، وتظهر مباشرة في كشف حساب المستأجر.</div>
 <div class="toolbar"><input id="contractSearch" placeholder="بحث"><button class="btn primary" onclick="newContract()">+ إضافة عقد</button></div>
-<div class="table"><table><thead><tr><th>العقد</th><th>المستأجر</th><th>المكتب</th><th>البداية</th><th>النهاية</th><th>الإيجار</th><th>الخدمات</th><th>رسوم العقد</th><th>VAT</th><th>الإجمالي</th><th>منفذ العقد</th><th>دفعات</th><th></th></tr></thead><tbody id="contractRows"></tbody></table></div></section>
+<div class="table"><table><thead><tr><th>العقد</th><th>المستأجر</th><th>المكتب</th><th>البداية</th><th>النهاية</th><th>الإيجار</th><th>الخدمات لكل دفعة</th><th>رسوم العقد</th><th>VAT لكل دفعة</th><th>الإجمالي</th><th>منفذ العقد</th><th>دفعات</th><th></th></tr></thead><tbody id="contractRows"></tbody></table></div></section>
 
-<section id="due" class="page"><h2>الدفعات المستحقة</h2><div class="toolbar"><button class="btn gray" onclick="printSection('due','الدفعات المستحقة')">🖨️ طباعة</button></div><div class="alert good">عرض تلقائي للاستحقاقات غير المحصلة خلال الثلاثة أشهر القادمة. رسوم العقد تظهر ضمن الاستحقاق الأول فقط.</div>
+<section id="due" class="page"><h2>الدفعات المستحقة</h2><div class="toolbar"><button class="btn gray" onclick="printSection('due','الدفعات المستحقة')">🖨️ طباعة</button></div><div class="alert good">عرض الاستحقاقات والمتأخرات حتى اليوم والثلاثة أشهر القادمة. رسوم العقد تظهر كحركة مدينة مستقلة على المستأجر.</div>
 <div class="toolbar"><label>المستأجر<select id="dueTenant" onchange="renderDue()"><option value="">كل المستأجرين</option></select></label><label>من <input id="dueFrom" type="date"></label><label>إلى <input id="dueTo" type="date"></label><select id="dueFilter" onchange="renderDue()"><option value="">كل الحالات</option><option>مستحق</option><option>متأخر</option><option>محصل</option></select><button class="btn gray" onclick="setDueThreeMonths()">📅 3 شهور قادمة</button><button class="btn gray" onclick="renderDue()">بحث</button></div>
 <div class="table"><table><thead><tr><th>التاريخ</th><th>المستأجر</th><th>العقد</th><th>الدفعة</th><th>الإيجار</th><th>الخدمات</th><th>رسوم العقد</th><th>VAT</th><th>الإجمالي</th><th>الحالة</th><th></th></tr></thead><tbody id="dueRows"></tbody></table></div></section>
 
@@ -290,7 +290,7 @@
 
 <section id="expenses" class="page"><h2>سندات الصرف</h2><div class="toolbar"><button class="btn primary" onclick="newExpense()">+ سند صرف</button><button class="btn gray" onclick="printSection('expenses','سندات الصرف')">🖨️ طباعة</button></div><div class="table"><table><thead><tr><th>السند</th><th>التاريخ</th><th>الحساب</th><th>البيان</th><th>المبلغ</th><th>إجراءات</th></tr></thead><tbody id="expenseRows"></tbody></table></div></section>
 
-<section id="invoices" class="page"><h2>الفواتير الضريبية</h2><div class="toolbar"><button class="btn primary" onclick="newInvoice()">+ فاتورة</button><button class="btn gray" onclick="printSection('invoices','الفواتير الضريبية')">🖨️ طباعة</button></div><div class="table"><table><thead><tr><th>الفاتورة</th><th>التاريخ</th><th>المستأجر</th><th>العقد</th><th>قبل الضريبة</th><th>VAT</th><th>الإجمالي</th></tr></thead><tbody id="invoiceRows"></tbody></table></div></section>
+<section id="invoices" class="page"><h2>الفواتير الضريبية</h2><div class="toolbar"><button class="btn primary" onclick="newInvoice()">+ فاتورة</button><button class="btn gray" onclick="printSection('invoices','الفواتير الضريبية')">🖨️ طباعة</button></div><div class="table"><table><thead><tr><th>الفاتورة</th><th>التاريخ</th><th>المستأجر</th><th>العقد</th><th>قيمة الإيجار</th><th>ضريبة الإيجار</th><th>الخدمات الإضافية</th><th>الإجمالي</th></tr></thead><tbody id="invoiceRows"></tbody></table></div></section>
 
 <section id="vat" class="page"><h2>تقرير VAT</h2><div class="panel"><div class="toolbar"><label>من <input id="vatFrom" type="date"></label><label>إلى <input id="vatTo" type="date"></label><button class="btn primary" onclick="renderVAT()">عرض الفترة</button><button class="btn gray" onclick="setVATCurrentYear()">السنة الحالية</button><button class="btn gray" onclick="printSection('vat','تقرير القيمة المضافة VAT')">🖨️ طباعة التقرير</button></div></div><div class="cards"><div class="card"><div class="label">المبيعات الخاضعة</div><div class="value num" id="vBase">0</div></div><div class="card"><div class="label">VAT مخرجات</div><div class="value num" id="vOut">0</div></div><div class="card"><div class="label">VAT مدخلات</div><div class="value num" id="vIn">0</div></div><div class="card"><div class="label">صافي VAT</div><div class="value num" id="vNet">0</div></div><div class="card"><div class="label">الفواتير</div><div class="value" id="vCount">0</div></div></div><div class="panel" id="vatDetail"></div></section>
 
@@ -327,17 +327,90 @@ function acctName(code){return acct(code)?.name||String(code||"")}
 function tenantAccountCode(t){let existing=acct(t?.accountCode);if(existing)return existing.code;let n=1000+db.tenants.findIndex(x=>x.id==t?.id)+1;let code="113"+String(n).padStart(3,"0");while(acct(code))code="113"+(++n);db.accounts.push({code,name:"عميل — "+(t?.name||""),parent:"حسابات العملاء",type:"أصل",tenantId:t?.id});if(t)t.accountCode=code;return code}
 function postAuto(sourceType,sourceId,date,debitCode,creditCode,amount,note){if(!(amount>0))return;db.journals.push({no:"JV-"+Date.now()+"-"+Math.random().toString(36).slice(2,6),date,amount:+amount||0,debitCode:String(debitCode),creditCode:String(creditCode),debit:acctName(debitCode),credit:acctName(creditCode),note,sourceType,sourceId})}
 function removeAuto(sourceType,sourceId){db.journals=db.journals.filter(j=>!(j.sourceType===sourceType&&String(j.sourceId)===String(sourceId)))}
-function rebuildAccounting(){db.journals=db.journals.filter(j=>!j.sourceType||!['tenant','contract','receipt','service','expense'].includes(j.sourceType));db.tenants.forEach(t=>tenantAccountCode(t));db.contracts.forEach(c=>{let t=tenant(c.tenantId);if(!t)return;let customer=tenantAccountCode(t), rent=+c.rent||0, services=+c.services||0, fee=+c.contractFee||0, v=+c.vat||0;postAuto('contract',c.id,c.start,customer,'4100',rent,'إثبات إيراد إيجارات العقد '+c.no);postAuto('contract',c.id,c.start,customer,'4200',services,'إثبات إيراد خدمات العقد '+c.no);postAuto('contract',c.id,c.start,customer,'4300',fee,'إثبات رسوم العقد '+c.no);postAuto('contract',c.id,c.start,customer,'212',v,'إثبات ضريبة العقد '+c.no)});db.receipts.forEach(r=>{let t=tenant(r.tenantId);let customer=tenantAccountCode(t);let cash=r.method==='نقدي'?'1111':'1112';postAuto('receipt',r.id,r.date,cash,customer,+r.amount||0,'تحصيل '+r.no)});db.services.forEach(x=>{let t=tenant(x.tenantId);let customer=tenantAccountCode(t);postAuto('service',x.id,x.date,customer,x.accountCode||'4200',+x.amount||0,'خدمة إضافية — '+(x.serviceName||'')+' — '+x.no);postAuto('service',x.id+'-vat',x.date,customer,'212',+x.vat||0,'ضريبة خدمة — '+x.no)});db.expenses.forEach(e=>postAuto('expense',e.no,e.date,e.accountCode||'515','1111',+e.amount||0,e.note||e.no))}
+function rebuildAccounting(){
+  db.journals=db.journals.filter(j=>!j.sourceType||!['tenant','contract','receipt','service','expense'].includes(j.sourceType));
+  db.tenants.forEach(t=>tenantAccountCode(t));
+  db.contracts.forEach(c=>{
+    let t=tenant(c.tenantId);if(!t)return;
+    let customer=tenantAccountCode(t), rent=+c.rent||0, services=+c.services||0, fee=+c.contractFee||0, v=+c.vat||0;
+    (c.installments||[]).slice(0,10).forEach((ins,i)=>{
+      let no=c.no+'-'+(i+1);
+      postAuto('contract',no,ins.date,customer,'4100',rent,'إيراد إيجار — '+c.no+' — دفعة '+(i+1));
+      postAuto('contract',no+'-services',ins.date,customer,'4200',services,'إيراد خدمات إضافية — '+c.no+' — دفعة '+(i+1));
+      postAuto('contract',no+'-vat',ins.date,customer,'212',v,'ضريبة الإيجار — '+c.no+' — دفعة '+(i+1));
+    });
+    if(fee>0)postAuto('contract',c.id+'-fee',c.start||today(),customer,'4300',fee,'رسوم العقد — '+c.no);
+  });
+  db.receipts.forEach(r=>{
+    let t=tenant(r.tenantId);if(!t)return;
+    let customer=tenantAccountCode(t), cash=r.method==='نقدي'?'1111':'1112';
+    postAuto('receipt',r.id,r.date,cash,customer,+r.amount||0,'تحصيل '+r.no);
+  });
+  db.services.forEach(x=>{
+    let t=tenant(x.tenantId);if(!t)return;
+    let customer=tenantAccountCode(t);
+    postAuto('service',x.id,x.date,customer,x.accountCode||'4200',+x.amount||0,'خدمة إضافية — '+(x.serviceName||'')+' — '+x.no);
+    postAuto('service',x.id+'-vat',x.date,customer,'212',+x.vat||0,'ضريبة خدمة — '+x.no);
+  });
+  db.expenses.forEach(e=>postAuto('expense',e.no,e.date,e.accountCode||'515','1111',+e.amount||0,e.note||e.no));
+}
 function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
 function openModal(t,b){$("modalTitle").textContent=t;$("modalBody").innerHTML=b;$("modal").classList.add("open")}
 function closeModal(){$("modal").classList.remove("open")}
-function finishSave(message="تم الحفظ بنجاح"){save();closeModal();if(message)alert(message)}
 function tenant(id){return db.tenants.find(x=>String(x.id)===String(id))}
 function contract(id){return db.contracts.find(x=>String(x.id)===String(id))}
 function base(c){return (+c.rent||0)+(+c.services||0)+(+c.contractFee||0)}
-function dueFor(c){let ins=(c.installments||[]).slice(0,10);return ins.map((x,i)=>{let fee=i===0?(+c.contractFee||0):0,b=(+c.rent||0)+(+c.services||0)+fee,v=+c.vat||0,next=ins[i+1]?.date||c.end||x.date;return{date:x.date,no:i+1,contractId:c.id,tenantId:c.tenantId,tenant:c.tenant,office:c.office,rent:+c.rent||0,services:+c.services||0,contractFee:fee,vat:v,total:b+v,periodStart:x.date,periodEnd:next}})}
+function dueFor(c){
+  let ins=(c.installments||[]).slice(0,10);
+  return ins.map((x,i)=>{
+    let fee=i===0?(+c.contractFee||0):0,
+        rent=+c.rent||0,
+        services=+c.services||0,
+        v=+c.vat||0,
+        prev=i===0?(c.start||x.date):ins[i-1].date,
+        next=x.date;
+    return{
+      date:x.date,no:i+1,contractId:c.id,tenantId:c.tenantId,tenant:c.tenant,office:c.office,
+      rent,services,contractFee:fee,vat:v,total:rent+services+fee+v,
+      periodStart:prev,periodEnd:next
+    };
+  });
+}
 function allDue(){return db.contracts.flatMap(dueFor).sort((a,b)=>a.date.localeCompare(b.date))}
-function collectedFor(x){return db.receipts.filter(r=>String(r.tenantId)==String(x.tenantId)&&String(r.contractId)==String(x.contractId)&&(r.installmentNo!=null?Number(r.installmentNo)===Number(x.no):r.date===x.date)).reduce((s,r)=>s+Number(r.amount||0),0)}
+function allocationForContract(c){
+  let dues=dueFor(c), alloc={};
+  dues.forEach(d=>alloc[d.no]=0);
+  let receipts=db.receipts.filter(r=>String(r.tenantId)==String(c.tenantId)&&String(r.contractId)==String(c.id))
+    .slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
+  const add=(startNo,amount)=>{
+    let idx=dues.findIndex(d=>d.no===startNo);
+    if(idx<0) idx=0;
+    for(let i=idx;i<dues.length&&amount>0;i++){
+      let d=dues[i], left=Math.max(0,d.total-(alloc[d.no]||0));
+      if(left<=0) continue;
+      let take=Math.min(left,amount);
+      alloc[d.no]=(alloc[d.no]||0)+take;
+      amount-=take;
+    }
+  };
+  receipts.forEach(r=>{
+    let amount=Number(r.amount||0);
+    if(amount<=0)return;
+    if(r.installmentNo!=null && r.installmentNo!==""){
+      add(Number(r.installmentNo),amount);
+    }else{
+      let idx=dues.findIndex(d=>String(r.date||"")>=String(d.date||"") && (alloc[d.no]||0)<d.total);
+      if(idx<0) idx=dues.findIndex(d=>(alloc[d.no]||0)<d.total);
+      if(idx>=0) add(dues[idx].no,amount);
+    }
+  });
+  return alloc;
+}
+function collectedFor(x){
+  let c=contract(x.contractId);
+  if(!c)return 0;
+  return Number(allocationForContract(c)[x.no]||0);
+}
 function state(x){let p=collectedFor(x);if(p>=x.total)return"محصل";if(days(x.date)<0)return"متأخر";return"مستحق"}
 
 function backup(){
@@ -468,33 +541,53 @@ db.tenants.forEach(t=>tenantAccountCode(t));
 if(!db.settings.accountingMigrated){db.journals=db.journals.filter(j=>!(String(j.debit||"").includes("الصندوق/البنك")||String(j.credit||"").includes("إيرادات الخدمات")||String(j.debit||"").includes("حساب المستأجر")));db.settings.accountingMigrated=true;}
 rebuildAccounting();
 function renderAll(){initDuePeriod();if($("vatFrom")&&!$("vatFrom").value){let y=new Date().getFullYear();$("vatFrom").value=`${y}-01-01`;$("vatTo").value=`${y}-12-31`;}renderDashboard();renderTenants();renderOffices();renderContracts();renderDue();renderReceipts();renderServices();renderPayments();renderJournals();renderAccounts();fillStatement();renderExpenses();renderInvoices();renderVAT();renderReports();renderFinancialReports();$("dateNow").textContent=new Date().toLocaleDateString("ar-SA")}
-function initDuePeriod(){if($("dueFrom")&&!$("dueFrom").value){let f=today(),d=new Date();d.setMonth(d.getMonth()+3);$("dueFrom").value=f;$("dueTo").value=d.toISOString().slice(0,10);$("dueFilter").value="مستحق"}}
+function initDuePeriod(){
+  if($("dueFrom")&&!$("dueFrom").value){
+    let d=new Date();d.setMonth(d.getMonth()+3);
+    $("dueFrom").value="";
+    $("dueTo").value=d.toISOString().slice(0,10);
+    $("dueFilter").value="";
+  }
+}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(b.dataset.page).classList.add("active");$("title").textContent=b.textContent.replace(/^[^\\p{L}\\p{N}]+/u,"");renderAll()});
 function renderDashboard(){
 $("dTenants").textContent=db.tenants.length;$("dOffices").textContent=db.offices.length;$("dContracts").textContent=db.contracts.filter(c=>!c.end||days(c.end)>=0).length;
-let dashboardThreeMonths=new Date();
-dashboardThreeMonths.setMonth(dashboardThreeMonths.getMonth()+3);
-let dashboardThreeMonthsDate=dashboardThreeMonths.toISOString().slice(0,10);
-let upcoming=allDue().filter(x=>x.date>=today()&&x.date<=dashboardThreeMonthsDate&&state(x)!=="محصل");
+let d3=new Date();d3.setMonth(d3.getMonth()+3);let d3s=d3.toISOString().slice(0,10);
+let upcoming=allDue().filter(x=>x.date<=d3s&&state(x)!="محصل").sort((a,b)=>(days(a.date)<0?0:1)-(days(b.date)<0?0:1)||a.date.localeCompare(b.date));
 $("dDue").textContent=upcoming.length;
 let balances=db.tenants.reduce((s,t)=>s+tenantBalance(t.id),0);$("dBalance").textContent=money(balances);
 let activeContracts=db.contracts.filter(c=>!c.end||days(c.end)>=0);
-$("dActiveValue").textContent=money(activeContracts.reduce((s,c)=>s+base(c)+(Number(c.vat)||0),0));
+$("dActiveValue").textContent=money(activeContracts.reduce((s,c)=>s+((+c.rent||0)+(+c.services||0)+(+c.vat||0))*(c.installments||[]).length+(+c.contractFee||0),0));
 $("dFouadH").textContent=activeContracts.filter(c=>c.executor==="اما فؤاد حيدر").length;
 $("dMohamedF").textContent=activeContracts.filter(c=>c.executor==="محمد فؤاد").length;
-$("dashDue").innerHTML=upcoming.slice(0,15).map(x=>`<div class="kpi"><span>${esc(x.date)} — ${esc(x.tenant)} — دفعة ${x.no}</span><b>${money(x.total-collectedFor(x))}</b></div>`).join("")||"لا توجد استحقاقات خلال الثلاثة أشهر القادمة";
-let ex=db.contracts.filter(c=>c.end&&c.end>=today()&&c.end<=dashboardThreeMonthsDate).slice(0,20);$("dashExpiry").innerHTML=ex.map(c=>`<div class="kpi"><span>${esc(c.tenant)} — ${esc(c.no)} — ${c.end}</span><button class="btn orange" onclick="extendContract(${c.id})">تمديد</button></div>`).join("")||"لا توجد عقود تنتهي خلال الثلاثة أشهر القادمة";
+$("dashDue").innerHTML=upcoming.slice(0,20).map(x=>`<div class="kpi"><span>${esc(x.date)} — ${esc(x.tenant)} — دفعة ${x.no} ${days(x.date)<0?'— متأخر':''}</span><b>${money(Math.max(0,x.total-collectedFor(x)))}</b></div>`).join("")||"لا توجد استحقاقات أو متأخرات حتى 3 شهور قادمة";
+let ex=db.contracts.filter(c=>c.end&&days(c.end)>=0&&days(c.end)<=90).slice(0,20);$("dashExpiry").innerHTML=ex.map(c=>`<div class="kpi"><span>${esc(c.tenant)} — ${esc(c.no)} — ${c.end}</span><button class="btn orange" onclick="extendContract(${c.id})">تمديد</button></div>`).join("")||"لا توجد عقود تنتهي خلال 3 شهور";
 let m={};db.receipts.forEach(r=>{let k=(r.date||"").slice(0,7);if(k)m[k]=(m[k]||0)+Number(r.amount||0)});let a=Object.entries(m).sort().slice(-8),mx=Math.max(1,...a.map(x=>x[1]));$("chart").innerHTML=a.map(([k,v])=>`<div class="bar" style="height:${Math.max(8,v/mx*140)}px"><small>${k}<br>${money(v)}</small></div>`).join("")||"لا توجد عمليات تحصيل";
 let yrs={};db.receipts.forEach(r=>{let y=(r.date||"").slice(0,4);if(y)yrs[y]=(yrs[y]||0)+Number(r.amount||0)});$("yearlyCollected").innerHTML=Object.entries(yrs).sort((a,b)=>b[0].localeCompare(a[0])).map(([y,v])=>`<div class="kpi"><span>سنة ${y}</span><b>${money(v)}</b></div>`).join("")||"لا توجد عمليات تحصيل مسجلة";
 $("monthlyCollected").innerHTML=Object.entries(m).sort((a,b)=>b[0].localeCompare(a[0])).map(([y,v])=>`<div class="kpi"><span>${y}</span><b>${money(v)}</b></div>`).join("")||"لا توجد عمليات تحصيل مسجلة";
 }
-function tenantBalance(id){let d=allDue().filter(x=>x.tenantId==id).reduce((s,x)=>s+x.total,0)+db.services.filter(x=>x.tenantId==id).reduce((s,x)=>s+Number(x.amount||0),0),c=db.receipts.filter(r=>r.tenantId==id).reduce((s,r)=>s+Number(r.amount||0),0);return d-c}
-function renderTenants(){let q=($("tenantSearch").value||"").toLowerCase();$("tenantRows").innerHTML=db.tenants.filter(t=>t.name.toLowerCase().includes(q)).map(t=>{let cs=db.contracts.filter(c=>c.tenantId==t.id),de=allDue().filter(x=>x.tenantId==t.id).reduce((s,x)=>s+x.total,0),cr=db.receipts.filter(r=>r.tenantId==t.id).reduce((s,r)=>s+Number(r.amount||0),0),os=[...new Set(cs.map(c=>c.office))].join(",");return `<tr><td>${t.code||""}</td><td><b>${esc(t.name)}</b></td><td>${cs.length}</td><td>${esc(os)}</td><td>${money(de)}</td><td>${money(cr)}</td><td>${money(de-cr)}</td><td><button class="btn gray" onclick="openTenantStatement(${t.id})">كشف</button> <button class="btn gray" onclick="printTenant(${t.id})">🖨️ طباعة</button> <button class="btn gray" onclick="editTenant(${t.id})">تعديل</button> <button class="btn red" onclick="deleteTenant(${t.id})">حذف</button></td></tr>`}).join("")}
+function tenantBalance(id){
+  let matches=x=>String(x.tenantId)==String(id);
+  let d=allDue().filter(matches).reduce((s,x)=>s+x.total,0)
+    +db.services.filter(matches).reduce((s,x)=>s+Number(x.amount||0)+Number(x.vat||0),0);
+  let c=db.receipts.filter(matches).reduce((s,r)=>s+Number(r.amount||0),0);
+  return d-c;
+}
+function renderTenants(){
+  let q=($("tenantSearch").value||"").toLowerCase();
+  $("tenantRows").innerHTML=db.tenants.filter(t=>t.name.toLowerCase().includes(q)).map(t=>{
+    let cs=db.contracts.filter(c=>c.tenantId==t.id),
+        de=allDue().filter(x=>x.tenantId==t.id).reduce((s,x)=>s+x.total,0)+db.services.filter(x=>x.tenantId==t.id).reduce((s,x)=>s+Number(x.amount||0)+Number(x.vat||0),0),
+        cr=db.receipts.filter(r=>r.tenantId==t.id).reduce((s,r)=>s+Number(r.amount||0),0),
+        os=[...new Set(cs.map(c=>c.office))].join(",");
+    return `<tr><td>${t.code||""}</td><td><b>${esc(t.name)}</b></td><td>${cs.length}</td><td>${esc(os)}</td><td>${money(de)}</td><td>${money(cr)}</td><td>${money(de-cr)}</td><td><button class="btn gray" onclick="openTenantStatement(${t.id})">كشف</button> <button class="btn gray" onclick="printTenant(${t.id})">🖨️ طباعة</button> <button class="btn gray" onclick="editTenant(${t.id})">تعديل</button> <button class="btn red" onclick="deleteTenant(${t.id})">حذف</button></td></tr>`;
+  }).join("");
+}
 function renderOffices(){let q=($("officeSearch").value||"").toLowerCase();$("officeRows").innerHTML=db.offices.filter(o=>String(o.no).toLowerCase().includes(q)).map(o=>{let c=db.contracts.find(c=>String(c.office)==String(o.no)&&(!c.end||days(c.end)>=0));return `<tr><td>${o.code||""}</td><td>${esc(o.no)}</td><td>${esc(o.area)}</td><td><span class="badge ${c?"ok":""}">${c?"مؤجر":"شاغر"}</span></td><td>${esc(c?.tenant||"")}</td><td>${esc(c?.no||"")}</td><td><button class="btn gray" onclick="printOffice(${o.id})">🖨️ طباعة</button> <button class="btn gray" onclick="editOffice(${o.id})">تعديل</button> <button class="btn red" onclick="deleteOffice(${o.id})">حذف</button></td></tr>`}).join("")}
 function renderContracts(){let q=($("contractSearch").value||"").toLowerCase();$("contractRows").innerHTML=db.contracts.filter(c=>(c.no+" "+c.tenant+" "+c.office+" "+(c.executor||"")).toLowerCase().includes(q)).map(c=>{let b=base(c),v=+c.vat||0;return `<tr><td><b>${esc(c.no)}</b></td><td>${esc(c.tenant)}</td><td>${esc(c.office)}</td><td>${c.start}</td><td>${c.end}</td><td>${money(c.rent)}</td><td>${money(c.services)}</td><td>${money(c.contractFee||0)}</td><td>${money(v)}</td><td>${money(b+v)}</td><td>${esc(c.executor||"")}</td><td>${(c.installments||[]).length}/10</td><td><button class="btn gray" onclick="printContract(${c.id})">🖨️ طباعة</button> <button class="btn gray" onclick="editContract(${c.id})">تعديل</button> <button class="btn orange" onclick="extendContract(${c.id})">تمديد</button> <button class="btn red" onclick="deleteContract(${c.id})">حذف</button></td></tr>`}).join("")}
-function setDueThreeMonths(){let f=today(),d=new Date();d.setMonth(d.getMonth()+3);let t=d.toISOString().slice(0,10);$("dueFrom").value=f;$("dueTo").value=t;$("dueFilter").value="مستحق";renderDue()}
+function setDueThreeMonths(){let d=new Date();d.setMonth(d.getMonth()+3);let t=d.toISOString().slice(0,10);$("dueFrom").value="";$("dueTo").value=t;$("dueFilter").value="";renderDue()}
 function fillDueTenantFilter(){let el=$("dueTenant");if(!el)return;let current=el.value;el.innerHTML=`<option value="">كل المستأجرين</option>`+db.tenants.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join("");el.value=current||""}
-function renderDue(){fillDueTenantFilter();let f=$("dueFrom").value,t=$("dueTo").value,st=$("dueFilter").value,tid=$("dueTenant").value;let a=allDue().filter(x=>state(x)!="محصل"&&(!tid||String(x.tenantId)===String(tid))&&(!f||x.date>=f)&&(!t||x.date<=t)&&(!st||state(x)==st));$("dueRows").innerHTML=a.map(x=>{let rem=Math.max(0,x.total-collectedFor(x));return `<tr><td>${x.date}</td><td><b>${esc(x.tenant)}</b></td><td>${esc(contract(x.contractId)?.no||"")}</td><td>${x.no}/10</td><td>${money(x.rent)}</td><td>${money(x.services)}</td><td>${x.contractFee>0?`<span class="badge due">رسوم العقد: ${money(x.contractFee)}</span>`:money(0)}</td><td>${money(x.vat)}</td><td>${money(rem)}</td><td><span class="badge ${state(x)=="متأخر"?"late":"due"}">${state(x)}</span></td><td><button class="btn gray" onclick="printDue(${x.contractId},${x.no})">🖨️ طباعة</button> <button class="btn green" onclick="receiptDue(${x.contractId},${x.no})">تحصيل</button></td></tr>`}).join("")||`<tr><td colspan="11" style="text-align:center;padding:20px">لا توجد استحقاقات غير محصلة ضمن الفترة المحددة</td></tr>`}
+function renderDue(){fillDueTenantFilter();let f=$("dueFrom").value,t=$("dueTo").value,st=$("dueFilter").value,tid=$("dueTenant").value;let a=allDue().filter(x=>state(x)!="محصل"&&(!tid||String(x.tenantId)===String(tid))&&(!f||x.date>=f)&&(!t||x.date<=t)&&(!st||state(x)==st));$("dueRows").innerHTML=a.map(x=>{let rem=Math.max(0,x.total-collectedFor(x));return `<tr><td>${x.date}</td><td><b>${esc(x.tenant)}</b></td><td>${esc(contract(x.contractId)?.no||"")}</td><td>${x.no}/10</td><td>${money(x.rent)}</td><td>${money(x.services)}</td><td>${x.contractFee>0?`<span class="badge due">رسوم العقد: ${money(x.contractFee)}</span>`:money(0)}</td><td>${money(x.vat)}</td><td>${money(rem)}</td><td><span class="badge ${state(x)=="متأخر"?"late":"due"}">${state(x)}</span></td><td><button class="btn gray" onclick="printDue(${x.contractId},${x.no})">🖨️ طباعة</button> <button class="btn green" onclick="receiptDue(${x.contractId},${x.no})">تحصيل</button></td></tr>`}).join("")||`<tr><td colspan="11" style="text-align:center;padding:20px">لا توجد استحقاقات أو متأخرات ضمن الفترة المحددة</td></tr>`}
 function renderReceipts(){$("receiptRows").innerHTML=db.receipts.map(r=>`<tr><td>${r.no}</td><td>${r.date}</td><td>${esc(r.tenant)}</td><td>${esc(contract(r.contractId)?.no||"")}</td><td>${money(r.amount)}</td><td>${esc(r.method)}</td><td>${esc(r.note)}</td><td>${r.image?`<button class="btn gray" onclick="viewReceiptImage(${r.id})">🖼 عرض</button>`:`<span class="muted">لا توجد</span>`}</td><td><button class="btn gray" onclick="printReceipt(${r.id})">🖨️ طباعة</button> <button class="btn gray" onclick="editReceipt(${r.id})">تعديل</button> <button class="btn red" onclick="deleteReceipt(${r.id})">حذف</button></td></tr>`).join("")}
 function renderServices(){$("serviceRows").innerHTML=db.services.map(x=>`<tr><td>${x.no}</td><td>${x.date}</td><td>${esc(x.tenant)}</td><td>${esc(contract(x.contractId)?.no||"")}</td><td>${esc(x.serviceName)}</td><td>${esc(x.note||"")}</td><td>${esc(x.accountCode||"4200")}</td><td>${money(x.amount)}</td><td>${money(x.vat||0)}</td><td><button class="btn gray" onclick="printService(${x.id})">🖨️ طباعة</button> <button class="btn red" onclick="deleteServiceCharge(${x.id})">حذف</button></td></tr>`).join("")||`<tr><td colspan="8" style="text-align:center;padding:20px">لا توجد خدمات مسجلة</td></tr>`}
 function newServiceCharge(){if(!db.tenants.length)return alert("أضف مستأجرًا أولًا");openModal("إضافة خدمة على مستأجر",`<div class="form"><label>المستأجر<select id="sTenant">${tenantOptions()}</select></label><label>الحساب الإيرادي<select id="sAccount">${db.accounts.filter(a=>a.type==="إيراد").map(a=>`<option value="${a.code}">${a.code} — ${esc(a.name)}</option>`).join("")}</select></label><label>العقد<select id="sContract"><option value="">بدون عقد</option>${db.contracts.map(c=>`<option value="${c.id}">${esc(c.no)} — ${esc(c.tenant)}</option>`).join("")}</select></label><label>التاريخ<input id="sDate" type="date" value="${today()}"></label><label>اسم الخدمة<input id="sName" placeholder="كهرباء / إنترنت / نظافة ..."></label><label>المبلغ قبل الضريبة<input id="sAmount" type="number"></label><label>الضريبة<input id="sVat" type="number" value="0"></label><label class="full">البيان<input id="sNote"></label><div class="full"><button class="btn primary" onclick="saveServiceCharge()">حفظ الخدمة والقيد</button></div></div>`)}
@@ -510,30 +603,25 @@ let id=$("statementTenant").value;if(!id)return;
 let from=$("statementFrom").value,to=$("statementTo").value,t=tenant(id),rows=[];
 let before=0;
 const inRange=d=>(!from||d>=from)&&(!to||d<=to);
-const addRow=r=>{if(inRange(r.date))rows.push(r);else if(from&&r.date<from)before+=r.debit-r.credit;};
+const addRow=r=>{if(inRange(r.date))rows.push(r);else if(from&&r.date<from)before+=r.debit-r.credit;
 
-// كل دفعة إيجار تظهر مستقلة، ورسوم العقد تظهر كحركة مدينة مستقلة وتزيد رصيد المستأجر مرة واحدة.
+};
 db.contracts.filter(c=>c.tenantId==id).forEach(c=>{
   let fee=+c.contractFee||0;
-  let feeDate=c.start||today();
-  if(fee>0) addRow({date:feeDate,no:c.no||"",desc:"رسوم العقد",debit:fee,credit:0,type:"contractFee"});
+  if(fee>0)addRow({date:c.start||today(),no:c.no||"",desc:"رسوم العقد",debit:fee,credit:0,type:"contractFee"});
   dueFor(c).forEach(x=>{
     let amount=(+x.rent||0)+(+x.services||0)+(+x.vat||0);
-    if(amount>0) addRow({date:x.date,no:c.no||"",desc:"دفعة الإيجار من "+x.periodStart+" إلى "+x.periodEnd,debit:amount,credit:0,type:"due"});
+    if(amount>0)addRow({date:x.date,no:c.no||"",desc:"استحقاق إيجار من "+x.periodStart+" إلى "+x.periodEnd,debit:amount,credit:0,type:"due"});
   });
 });
-
 db.services.filter(x=>x.tenantId==id).forEach(x=>{
-  let d=x.date,amount=(+x.amount||0)+(+x.vat||0);
-  if(amount>0)addRow({date:d,no:x.no,desc:"خدمة — "+x.serviceName+(x.note?" — "+x.note:""),debit:amount,credit:0,type:"service"});
+  let amount=(+x.amount||0)+(+x.vat||0);
+  if(amount>0)addRow({date:x.date,no:x.no,desc:"خدمة — "+x.serviceName+(x.note?" — "+x.note:""),debit:amount,credit:0,type:"service"});
 });
-
 db.receipts.filter(r=>r.tenantId==id).forEach(r=>{
-  let d=r.date;
-  if(inRange(d))rows.push({date:d,no:contract(r.contractId)?.no||r.no,desc:r.note||("تحصيل — "+r.no),debit:0,credit:+r.amount||0,type:"receipt"});
-  else if(from&&d<from)before-=+r.amount||0;
+  if(inRange(r.date))rows.push({date:r.date,no:contract(r.contractId)?.no||r.no,desc:r.note||("تحصيل — "+r.no),debit:0,credit:+r.amount||0,type:"receipt"});
+  else if(from&&r.date<from)before-=+r.amount||0;
 });
-
 rows.sort((a,b)=>a.date.localeCompare(b.date)||((a.type==="contractFee")?-1:1));
 let run=before;
 let range=(from||"بداية")+" إلى "+(to||"اليوم");
@@ -541,22 +629,13 @@ let totalDebit=rows.reduce((z,r)=>z+r.debit,0),totalCredit=rows.reduce((z,r)=>z+
 $("statementHead").innerHTML=`<div class="alert good"><b>${esc(t.name)}</b> — الفترة: <b>${range}</b> — رصيد أول المدة: <b>${money(before)}</b> — إجمالي المدين: <b>${money(totalDebit)}</b> — إجمالي الدائن: <b>${money(totalCredit)}</b> — الرصيد: <b>${money(run+totalDebit-totalCredit)}</b></div>`;
 $("statementRows").innerHTML=rows.map(r=>{run+=r.debit-r.credit;let cls=r.type==="contractFee"?' style="font-weight:700"':'';return `<tr${cls}><td>${r.date}</td><td>${esc(r.no)}</td><td>${esc(r.desc)}</td><td>${money(r.debit)}</td><td>${money(r.credit)}</td><td>${money(run)}</td></tr>`}).join("")||`<tr><td colspan="6" style="text-align:center;padding:20px">لا توجد حركة في الفترة المحددة</td></tr>`
 }
+
 function renderExpenses(){$("expenseRows").innerHTML=db.expenses.map(e=>`<tr><td>${e.no}</td><td>${e.date}</td><td>${esc(e.account)}</td><td>${esc(e.note)}</td><td>${money(e.amount)}</td><td><button class="btn gray" onclick="printExpense('${e.no}')">🖨️ طباعة</button> <button class="btn gray" onclick="editExpense('${e.no}')">تعديل</button> <button class="btn red" onclick="deleteExpense('${e.no}')">حذف</button></td></tr>`).join("")}
-function renderInvoices(){$("invoiceRows").innerHTML=db.invoices.map(i=>`<tr><td>${i.no}</td><td>${i.date}</td><td>${esc(i.tenant)}</td><td>${esc(i.contractNo)}</td><td>${money(i.base)}</td><td>${money(i.vat)}</td><td>${money(i.total)}</td><td><button class="btn gray" onclick="printInvoice(${i.id})">🖨️ طباعة</button></td></tr>`).join("")}
-function setVATCurrentYear(){let y=new Date().getFullYear();$("vatFrom").value=`${y}-01-01`;$("vatTo").value=`${y}-12-31`;renderVAT()}
-function renderVAT(){let from=$("vatFrom")?.value||"",to=$("vatTo")?.value||"";let inv=db.invoices.filter(i=>(!from||i.date>=from)&&(!to||i.date<=to));let b=inv.reduce((s,i)=>s+Number(i.base||0),0),v=inv.reduce((s,i)=>s+Number(i.vat||0),0);let input=0;$('vBase').textContent=money(b);$('vOut').textContent=money(v);$('vIn').textContent=money(input);$('vNet').textContent=money(v-input);$('vCount').textContent=inv.length;$('vatDetail').innerHTML=`<div class="kpi"><span>الفترة</span><b>${from||'بداية' } — ${to||'حتى الآن'}</b></div><div class="kpi"><span>عدد الفواتير</span><b>${inv.length}</b></div><div class="kpi"><span>المبيعات الخاضعة</span><b>${money(b)}</b></div><div class="kpi"><span>VAT مخرجات</span><b>${money(v)}</b></div><div class="table" style="margin-top:12px"><table><thead><tr><th>الفاتورة</th><th>التاريخ</th><th>المستأجر</th><th>قبل الضريبة</th><th>VAT</th><th>الإجمالي</th></tr></thead><tbody>${inv.map(i=>`<tr><td>${esc(i.no)}</td><td>${esc(i.date)}</td><td>${esc(i.tenant)}</td><td>${money(i.base)}</td><td>${money(i.vat)}</td><td>${money(i.total)}</td></tr>`).join('')||`<tr><td colspan="6" style="text-align:center;padding:20px">لا توجد فواتير خلال الفترة المحددة</td></tr>`}</tbody></table></div>`}
-function accountMovements(from,to){let rows=[];db.journals.forEach(j=>{if(from&&j.date<from)return;if(to&&j.date>to)return;let d=j.debitCode||findAccountCode(j.debit),c=j.creditCode||findAccountCode(j.credit);if(d)rows.push({code:String(d),debit:+j.amount||0,credit:0});if(c)rows.push({code:String(c),debit:0,credit:+j.amount||0})});return rows}
-function findAccountCode(label){let a=db.accounts.find(x=>String(x.code)===String(label)||x.name===label);return a?.code}
-function switchReportView(){let t=$("reportType")?.value||"income";["Income","Trial","Revenue","Expense","Tenants"].forEach(x=>{let el=$("reportView"+x);if(el)el.style.display=(t===x.toLowerCase()||(!t&&x==="Income"))?"block":"none"});}
-function renderFinancialReports(){let from=$("reportFrom")?.value||"",to=$("reportTo")?.value||"";let mov=accountMovements(from,to),map={};mov.forEach(x=>{map[x.code]??={debit:0,credit:0};map[x.code].debit+=x.debit;map[x.code].credit+=x.credit});let sorted=[...db.accounts].filter(a=>map[a.code]||['أصل','التزام','حقوق ملكية','إيراد','مصروف'].includes(a.type)).sort((a,b)=>String(a.code).localeCompare(String(b.code),undefined,{numeric:true}));let revenues=sorted.filter(a=>a.type==='إيراد').map(a=>({a,m:map[a.code]||{debit:0,credit:0}})),expenses=sorted.filter(a=>a.type==='مصروف').map(a=>({a,m:map[a.code]||{debit:0,credit:0}}));let rev=revenues.reduce((s,x)=>s+x.m.credit-x.m.debit,0),exp=expenses.reduce((s,x)=>s+x.m.debit-x.m.credit,0),net=rev-exp;let collected=db.receipts.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to)).reduce((s,r)=>s+Number(r.amount||0),0);$("reportRevenueTotal").textContent=money(rev);$("reportExpenseTotal").textContent=money(exp);$("reportNetTotal").textContent=money(net);$("reportCollectedTotal").textContent=money(collected);$("trialBalanceRows").innerHTML=sorted.map(a=>{let m=map[a.code]||{debit:0,credit:0},bal=m.debit-m.credit;return `<tr><td>${a.code}</td><td>${esc(a.name)}</td><td>${money(m.debit)}</td><td>${money(m.credit)}</td><td>${money(bal)}</td></tr>`}).join("");$("incomeStatement").innerHTML=`<div class="kpi"><span><b>إجمالي الإيرادات</b></span><b>${money(rev)}</b></div>`+revenues.map(x=>`<div class="kpi"><span>${x.a.code} — ${esc(x.a.name)}</span><b>${money(x.m.credit-x.m.debit)}</b></div>`).join("")+`<hr><div class="kpi"><span><b>إجمالي المصروفات</b></span><b>${money(exp)}</b></div>`+expenses.map(x=>`<div class="kpi"><span>${x.a.code} — ${esc(x.a.name)}</span><b>${money(x.m.debit-x.m.credit)}</b></div>`).join("")+`<hr><div class="kpi"><span><b>صافي الربح / (الخسارة)</b></span><b>${money(net)}</b></div>`;$("revenueReport").innerHTML=`<div class="kpi"><span><b>إجمالي الإيرادات</b></span><b>${money(rev)}</b></div>`+revenues.map(x=>`<div class="kpi"><span>${x.a.code} — ${esc(x.a.name)}</span><b>${money(x.m.credit-x.m.debit)}</b></div>`).join("")||"لا توجد إيرادات";$("expenseReport").innerHTML=`<div class="kpi"><span><b>إجمالي المصروفات</b></span><b>${money(exp)}</b></div>`+expenses.map(x=>`<div class="kpi"><span>${x.a.code} — ${esc(x.a.name)}</span><b>${money(x.m.debit-x.m.credit)}</b></div>`).join("")||"لا توجد مصروفات";$("reportTenants").innerHTML=db.tenants.map(t=>`<div class="kpi"><span>${esc(t.name)}</span><b>${money(tenantBalance(t.id))}</b></div>`).join("");$("reportExpiry").innerHTML=db.contracts.filter(c=>c.end&&days(c.end)<=60).map(c=>`<div class="kpi"><span>${esc(c.tenant)} — ${esc(c.no)} — ${c.end}</span><button class="btn orange" onclick="extendContract(${c.id})">تمديد</button></div>`).join("")||"لا توجد عقود قريبة من الانتهاء";switchReportView()}
-
-function renderReports(){let collected=db.receipts.reduce((s,r)=>s+Number(r.amount||0),0),due=allDue().reduce((s,x)=>s+x.total,0);$("reportFinance").innerHTML=`<div class="kpi"><span>إجمالي الاستحقاقات</span><b>${money(due)}</b></div><div class="kpi"><span>إجمالي التحصيل</span><b>${money(collected)}</b></div><div class="kpi"><span>إجمالي الأرصدة</span><b>${money(due-collected)}</b></div>`;$("reportTenants").innerHTML=db.tenants.map(t=>`<div class="kpi"><span>${esc(t.name)}</span><b>${money(tenantBalance(t.id))}</b></div>`).join("");$("reportExpiry").innerHTML=db.contracts.filter(c=>c.end&&days(c.end)<=60).map(c=>`<div class="kpi"><span>${esc(c.tenant)} — ${esc(c.no)} — ${c.end}</span><button class="btn orange" onclick="extendContract(${c.id})">تمديد</button></div>`).join("")||"لا توجد عقود قريبة من الانتهاء"}
-function tenantOptions(id){return db.tenants.map(t=>`<option value="${t.id}" ${t.id==id?"selected":""}>${esc(t.name)}</option>`).join("")}
-function officeOptions(no){return db.offices.map(o=>`<option value="${esc(o.no)}" ${o.no==no?"selected":""}>${esc(o.no)} — ${esc(o.area)}</option>`).join("")}
-
-function editTenant(id){
- const t=tenant(id);
- openModal("تعديل مستأجر",`<div class="form"><label>الكود<input id="tCode" value="${esc(t.code||"")}"></label><label>اسم المستأجر<input id="tName" value="${esc(t.name||"")}"></label><label>الرقم الضريبي<input id="tVat" value="${esc(t.vatNo||"")}"></label><label>الهاتف<input id="tPhone" value="${esc(t.phone||"")}"></label><div class="full"><button class="btn primary" onclick="updateTenant(${id})">حفظ التعديل</button></div></div>`);
+function renderInvoices(){
+  $("invoiceRows").innerHTML=db.invoices.map(i=>{
+    let rent=Number(i.rent??i.taxableBase??i.base??0),services=Number(i.services||0),v=Number(i.vat||0),total=Number(i.total??(rent+services+v));
+    return `<tr><td>${esc(i.no)}</td><td>${esc(i.date)}</td><td>${esc(i.tenant)}</td><td>${esc(i.contractNo||"")}</td><td>${money(rent)}</td><td>${money(v)}</td><td>${money(services)}</td><td>${money(total)}</td><td><button class="btn gray" onclick="printInvoice(${i.id})">🖨️ طباعة</button></td></tr>`;
+  }).join("")||`<tr><td colspan="8" style="text-align:center;padding:20px">لا توجد فواتير</td></tr>`;
 }
 function updateTenant(id){let t=tenant(id);t.code=$("tCode").value;t.name=$("tName").value;t.vatNo=$("tVat").value;t.phone=$("tPhone").value;db.contracts.filter(c=>c.tenantId==id).forEach(c=>c.tenant=t.name);db.receipts.filter(r=>r.tenantId==id).forEach(r=>r.tenant=t.name);save();closeModal()}
 function deleteTenant(id){if(db.contracts.some(c=>c.tenantId==id)||db.receipts.some(r=>r.tenantId==id))return alert("لا يمكن حذف المستأجر لأنه مرتبط بعقود أو سندات. عدّل البيانات أو احذف الحركات أولًا.");if(confirm("حذف المستأجر؟")){db.tenants=db.tenants.filter(x=>x.id!=id);save()}}
@@ -587,9 +666,9 @@ function contractForm(c=null){
 <label>تاريخ بداية العقد<input id="cStart" type="date" value="${c?.start||""}"></label>
 <label>تاريخ نهاية العقد<input id="cEnd" type="date" value="${c?.end||""}"></label>
 <label>قيمة الإيجار للدفعة الواحدة<input id="cRent" type="number" value="${c?.rent||0}" oninput="calcContract()"></label>
-<label>الخدمات الأخرى للدفعة<input id="cServices" type="number" value="${c?.services||0}" oninput="calcContract()"></label>
+<label>الخدمات الإضافية لكل دفعة<input id="cServices" type="number" value="${c?.services||0}" oninput="calcContract()"></label>
 <label>رسوم العقد<input id="cContractFee" type="number" value="${c?.contractFee||0}" oninput="calcContract()"></label>
-<label>ضريبة أول دفعة إيجار<input id="cVat" type="number" value="${c?.vat||0}" oninput="calcContract()"></label>
+<label>ضريبة الإيجار لكل دفعة<input id="cVat" type="number" value="${c?.vat||0}" oninput="calcContract()"></label>
 <label>منفذ العقد<select id="cExecutor"><option value="اما فؤاد حيدر" ${c?.executor==="اما فؤاد حيدر"?"selected":""}>اما فؤاد حيدر</option><option value="محمد فؤاد" ${c?.executor==="محمد فؤاد"?"selected":""}>محمد فؤاد</option></select></label>
 <label>إجمالي أول دفعة إيجار<input id="cTotal" readonly></label>
 <label>عدد الدفعات المستحقة (1 إلى 10)<input id="installmentCount" type="number" min="1" max="10" value="${n}" oninput="renderInstallmentInputs()"></label>
@@ -610,15 +689,22 @@ let t=tenant($("cTenant").value),c=id?contract(id):null,n=Math.max(1,Math.min(10
 if(!$("cStart").value||!$("cEnd").value||!dates.length)return alert("أدخل بداية ونهاية العقد وتاريخ استحقاق واحد على الأقل");
 let obj={id:c?.id||Date.now(),no:$("cNo").value||("CTR-"+Date.now()),tenant:t.name,tenantId:t.id,office:$("cOffice").value,start:$("cStart").value,end:$("cEnd").value,rent:+$("cRent").value||0,services:+$("cServices").value||0,contractFee:+$("cContractFee").value||0,vat:+$("cVat").value||0,executor:$("cExecutor").value,installments:dates.map(d=>({date:d}))};
 if(id)db.contracts[db.contracts.findIndex(x=>x.id==id)]=obj;else db.contracts.push(obj);
-rebuildContractMovements(obj);rebuildAccounting();finishSave("تم حفظ العقد وإنشاء الاستحقاقات والفواتير والقيود تلقائيًا")}
+rebuildContractMovements(obj);rebuildAccounting();save();closeModal();alert("تم حفظ العقد وإنشاء الاستحقاقات والفواتير والقيود تلقائيًا")}
 function rebuildContractMovements(c){
-db.invoices=db.invoices.filter(i=>i.contractId!=c.id);
-let b=base(c),v=+$("cVat")?.value||c.vat||0;
-c.installments.forEach((x,i)=>{let ib=(+c.rent||0)+(+c.services||0)+(i===0?(+c.contractFee||0):0),iv=c.installments.length?((v/(c.installments.length||1))):0;db.invoices.push({id:Date.now()+i,no:"INV-"+Date.now()+i,date:x.date,tenant:c.tenant,tenantId:c.tenantId,contractId:c.id,contractNo:c.no,base:ib,vat:iv,total:ib+iv})});
+  db.invoices=db.invoices.filter(i=>i.contractId!=c.id);
+  let rent=+c.rent||0, services=+c.services||0, v=+c.vat||0;
+  c.installments.forEach((x,i)=>{
+    let no="INV-"+Date.now()+i;
+    let base=rent+services;
+    db.invoices.push({
+      id:Date.now()+i,no,date:x.date,tenant:c.tenant,tenantId:c.tenantId,
+      contractId:c.id,contractNo:c.no,rent,services,taxableBase:rent,base,vat:v,total:rent+v+services
+    });
+  });
 }
 function extendContract(id){
 let c=contract(id);openModal("تمديد العقد — "+esc(c.no),`<div class="form"><label>بداية التمديد<input id="eStart" type="date" value="${c.end}"></label><label>نهاية التمديد<input id="eEnd" type="date"></label><div class="full"><b>تواريخ الدفعات الجديدة</b><div class="inst">${Array.from({length:10},(_,i)=>`<div class="instbox"><label>الدفعة ${i+1}<input id="ei${i}" type="date"></label></div>`).join("")}</div></div><div class="full"><button class="btn orange" onclick="saveExtension(${id})">حفظ التمديد</button></div></div>`)}
-function saveExtension(id){let c=contract(id),dates=Array.from({length:10},(_,i)=>$("ei"+i).value).filter(Boolean);if(!$("eEnd").value||!dates.length)return alert("أدخل نهاية التمديد وتواريخ الاستحقاق");c.start=$("eStart").value;c.end=$("eEnd").value;c.installments=dates.map(d=>({date:d}));rebuildContractMovements(c);finishSave("تم حفظ التمديد وإغلاق شاشة الإدخال")}
+function saveExtension(id){let c=contract(id),dates=Array.from({length:10},(_,i)=>$("ei"+i).value).filter(Boolean);if(!$("eEnd").value||!dates.length)return alert("أدخل نهاية التمديد وتواريخ الاستحقاق");c.start=$("eStart").value;c.end=$("eEnd").value;c.installments=dates.map(d=>({date:d}));rebuildContractMovements(c);save();closeModal()}
 function receiptDue(cid,no){let x=dueFor(contract(cid)).find(x=>x.no==no);if(!x)return;let remaining=Math.max(0,x.total-collectedFor(x));newReceipt({...x,remaining,installmentNo:x.no})}
 function newReceipt(p=null){
 if(!db.tenants.length)return alert("أضف مستأجرًا أولًا");
@@ -626,7 +712,7 @@ let amount=p?.remaining??p?.total??"";
 window.currentReceiptInstallmentNo=p?.installmentNo||p?.no||null;
 let period=p?.periodEnd?`دفعة الإيجار خالص من ${p.periodStart} إلى ${p.periodEnd}`:"";
 openModal("سند قبض",`<div class="form"><label>المستأجر<select id="rTenant">${tenantOptions(p?.tenantId)}</select></label><label>العقد<select id="rContract">${db.contracts.map(c=>`<option value="${c.id}" ${p&&c.id==p.contractId?"selected":""}>${esc(c.no)} — ${esc(c.tenant)}</option>`).join("")}</select></label><label>تاريخ التحصيل<input id="rDate" type="date" value="${today()}"></label><label>المبلغ<input id="rAmount" type="number" value="${amount}"></label><label>طريقة الدفع<select id="rMethod"><option>تحويل بنكي</option><option>شبكة</option><option>نقدي</option></select></label><label>البيان<input id="rNote" value="${esc(period)}"></label><label class="full">صورة التحويل / إيصال الدفع<input id="rImage" type="file" accept="image/*"></label><div class="full"><small class="muted">الصورة تُحفظ داخل سند القبض ويمكن فتحها في أي وقت.</small></div><div class="full"><button class="btn green" onclick="saveReceipt()">حفظ التحصيل</button></div></div>`)}
-async function saveReceipt(){let t=tenant($("rTenant").value),c=contract($("rContract").value),r={id:Date.now(),no:"RC-"+Date.now(),date:$("rDate").value,tenantId:t.id,tenant:t.name,contractId:c?.id,installmentNo:window.currentReceiptInstallmentNo||null,amount:+$("rAmount").value||0,method:$("rMethod").value,note:$("rNote").value,image:""};if(!r.amount)return alert("أدخل مبلغ التحصيل");let f=$("rImage")?.files?.[0];if(f)r.image=await fileToDataURL(f);db.receipts.push(r);rebuildAccounting();window.currentReceiptInstallmentNo=null;finishSave("تم حفظ سند القبض والتحصيل وإغلاق شاشة الإدخال")}
+async function saveReceipt(){let t=tenant($("rTenant").value),c=contract($("rContract").value),r={id:Date.now(),no:"RC-"+Date.now(),date:$("rDate").value,tenantId:t.id,tenant:t.name,contractId:c?.id,installmentNo:window.currentReceiptInstallmentNo||null,amount:+$("rAmount").value||0,method:$("rMethod").value,note:$("rNote").value,image:""};if(!r.amount)return alert("أدخل مبلغ التحصيل");let f=$("rImage")?.files?.[0];if(f)r.image=await fileToDataURL(f);db.receipts.push(r);rebuildAccounting();window.currentReceiptInstallmentNo=null;save();closeModal()}
 function viewReceiptImage(id){let r=db.receipts.find(x=>x.id==id);if(!r?.image)return alert("لا توجد صورة مرفقة لهذا السند");openModal("صورة سند القبض",`<div style="text-align:center"><img src="${r.image}" style="max-width:100%;max-height:70vh;border-radius:12px;border:1px solid var(--line);box-shadow:0 8px 25px #0002"><div style="margin-top:12px"><b>${esc(r.no)}</b> — ${esc(r.date)} — ${money(r.amount)}</div></div>`)}
 function fileToDataURL(file){return new Promise((resolve,reject)=>{let fr=new FileReader();fr.onload=()=>resolve(fr.result);fr.onerror=reject;fr.readAsDataURL(file)})}
 function newExpense(){openModal("سند صرف",`<div class="form"><label>التاريخ<input id="xDate" type="date" value="${today()}"></label><label>الحساب<select id="xAccount">${db.accounts.filter(a=>a.type==="مصروف").map(a=>`<option value="${a.code}">${a.code} — ${esc(a.name)}</option>`).join("")}</select></label><label>المبلغ<input id="xAmount" type="number"></label><label>البيان<input id="xNote"></label><div class="full"><button class="btn primary" onclick="saveExpense()">حفظ</button></div></div>`)}
@@ -636,9 +722,9 @@ function newJournal(){openModal("قيد يومية",`<div class="form"><label>ا
 function saveJournal(){let amount=+$('jAmount').value||0,debit=$('jDebit').value,credit=$('jCredit').value;if(!debit||!credit)return alert("اختر حساب المدين وحساب الدائن من شجرة الحسابات");if(debit===credit)return alert("لا يمكن اختيار نفس الحساب مدينًا ودائنًا");if(amount<=0)return alert("أدخل مبلغ القيد");db.journals.push({no:"JV-"+Date.now(),date:$("jDate").value,amount,debit,credit,note:$("jNote").value});save();closeModal()}
 function newAccount(){openModal("إضافة حساب",`<div class="form"><label>الكود<input id="aCode"></label><label>اسم الحساب<input id="aName"></label><label>الحساب الأب<select id="aParent"><option value="">— حساب رئيسي —</option>${db.accounts.map(a=>`<option value="${a.name}">${a.code} — ${esc(a.name)}</option>`).join("")}</select></label><label>النوع<select id="aType"><option>أصل</option><option>التزام</option><option>حقوق ملكية</option><option>إيراد</option><option>مصروف</option></select></label><div class="full"><button class="btn primary" onclick="saveAccount()">حفظ</button></div></div>`)}
 function saveAccount(){db.accounts.push({code:$("aCode").value,name:$("aName").value,parent:$("aParent").value,type:$("aType").value});save();closeModal()}
-function newInvoice(){if(!db.tenants.length)return alert("أضف مستأجرًا أولًا");openModal("فاتورة ضريبية",`<div class="form"><label>المستأجر<select id="iTenant">${tenantOptions()}</select></label><label>العقد<select id="iContract">${db.contracts.map(c=>`<option value="${c.id}">${esc(c.no)} — ${esc(c.tenant)}</option>`).join("")}</select></label><label>التاريخ<input id="iDate" type="date" value="${today()}"></label><label>قبل الضريبة<input id="iBase" type="number" oninput="calcInvoice()"></label><label>VAT 15%<input id="iVat" readonly></label><label>الإجمالي<input id="iTotal" readonly></label><div class="full"><button class="btn primary" onclick="saveInvoice()">حفظ</button></div></div>`)}
-function calcInvoice(){let b=+$("iBase").value||0;$("iVat").value=vat(b);$("iTotal").value=b+vat(b)}
-function saveInvoice(){let t=tenant($("iTenant").value),c=contract($("iContract").value),b=+$("iBase").value||0,v=vat(b);db.invoices.push({id:Date.now(),no:"INV-"+Date.now(),date:$("iDate").value,tenant:t.name,tenantId:t.id,contractId:c?.id,contractNo:c?.no||"",base:b,vat:v,total:b+v});save();closeModal()}
+function newInvoice(){if(!db.tenants.length)return alert("أضف مستأجرًا أولًا");openModal("فاتورة ضريبية",`<div class="form"><label>المستأجر<select id="iTenant">${tenantOptions()}</select></label><label>العقد<select id="iContract">${db.contracts.map(c=>`<option value="${c.id}">${esc(c.no)} — ${esc(c.tenant)}</option>`).join("")}</select></label><label>التاريخ<input id="iDate" type="date" value="${today()}"></label><label>قيمة الإيجار<input id="iRent" type="number" oninput="calcInvoice()"></label><label>الضريبة على الإيجار 15%<input id="iVat" readonly></label><label>الخدمات الإضافية<input id="iServices" type="number" value="0" oninput="calcInvoice()"></label><label>الإجمالي<input id="iTotal" readonly></label><div class="full"><button class="btn primary" onclick="saveInvoice()">حفظ</button></div></div>`)}
+function calcInvoice(){let rent=+$("iRent").value||0,services=+$("iServices").value||0,v=vat(rent);$("iVat").value=v;$("iTotal").value=rent+v+services}
+function saveInvoice(){let t=tenant($("iTenant").value),c=contract($("iContract").value),rent=+$("iRent").value||0,services=+$("iServices").value||0,v=vat(rent);db.invoices.push({id:Date.now(),no:"INV-"+Date.now(),date:$("iDate").value,tenant:t.name,tenantId:t.id,contractId:c?.id,contractNo:c?.no||"",rent,services,taxableBase:rent,base:rent+services,vat:v,total:rent+services+v});save();closeModal()}
 ["tenantSearch","officeSearch","contractSearch"].forEach(id=>$(id).addEventListener("input",renderAll));
 
 
@@ -654,7 +740,7 @@ function printReceipt(id){let r=db.receipts.find(x=>x.id==id);if(!r)return;let c
 function printExpense(no){let e=db.expenses.find(x=>x.no==no);if(!e)return;let body=`<div class="meta"><div><b>رقم السند</b>${esc(e.no)}</div><div><b>التاريخ</b>${esc(e.date)}</div><div><b>الحساب</b>${esc(e.account||'')}</div><div><b>المبلغ</b>${money(e.amount)}</div></div><div class="total">إجمالي سند الصرف: ${money(e.amount)}</div><div style="margin-top:15px"><b>البيان:</b> ${esc(e.note||'')}</div>`;printSingle('سند صرف — '+e.no,body)}
 function printJournal(no){let j=db.journals.find(x=>String(x.no)===String(no));if(!j)return;let body=`<div class="meta"><div><b>رقم القيد</b>${esc(j.no)}</div><div><b>التاريخ</b>${esc(j.date)}</div><div><b>المبلغ</b>${money(j.amount)}</div><div><b>البيان</b>${esc(j.note||'')}</div></div><table><thead><tr><th>الحساب المدين</th><th>الحساب الدائن</th><th>المبلغ</th></tr></thead><tbody><tr><td>${esc(j.debit||'')}</td><td>${esc(j.credit||'')}</td><td>${money(j.amount)}</td></tr></tbody></table>`;printSingle('قيد يومية — '+j.no,body)}
 function printContract(id){let c=contract(id);if(!c)return;let b=base(c),v=+c.vat||0;let inst=(c.installments||[]).map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${money((+c.rent||0)+(+c.services||0)+(i===0?(+c.contractFee||0):0))}</td><td>${i===0?money(c.contractFee||0):'—'}</td></tr>`).join('');let body=`<div class="meta"><div><b>رقم العقد</b>${esc(c.no)}</div><div><b>المستأجر</b>${esc(c.tenant)}</div><div><b>المكتب</b>${esc(c.office)}</div><div><b>المدة</b>${esc(c.start)} إلى ${esc(c.end)}</div><div><b>الإيجار للدفعة</b>${money(c.rent)}</div><div><b>الخدمات</b>${money(c.services)}</div><div><b>رسوم العقد</b>${money(c.contractFee||0)}</div><div><b>الضريبة</b>${money(v)}</div></div><div class="total">إجمالي أول دفعة: ${money(b+v)}</div><h3>جدول الاستحقاقات</h3><table><thead><tr><th>رقم</th><th>التاريخ</th><th>قيمة الدفعة</th><th>رسوم العقد</th></tr></thead><tbody>${inst||'<tr><td colspan="4">لا توجد دفعات</td></tr>'}</tbody></table>`;printSingle('عقد إيجار — '+c.no,body)}
-function printInvoice(id){let i=db.invoices.find(x=>x.id==id);if(!i)return;let body=`<div class="meta"><div><b>رقم الفاتورة</b>${esc(i.no)}</div><div><b>التاريخ</b>${esc(i.date)}</div><div><b>المستأجر</b>${esc(i.tenant)}</div><div><b>العقد</b>${esc(i.contractNo||'')}</div><div><b>قبل الضريبة</b>${money(i.base)}</div><div><b>VAT</b>${money(i.vat)}</div></div><div class="total">الإجمالي شامل الضريبة: ${money(i.total)}</div>`;printSingle('فاتورة ضريبية — '+i.no,body)}
+function printInvoice(id){let i=db.invoices.find(x=>x.id==id);if(!i)return;let rent=Number(i.rent??i.taxableBase??i.base??0),services=Number(i.services||0),v=Number(i.vat||0),total=Number(i.total??(rent+services+v));let body=`<div class="meta"><div><b>رقم الفاتورة</b>${esc(i.no)}</div><div><b>التاريخ</b>${esc(i.date)}</div><div><b>المستأجر</b>${esc(i.tenant)}</div><div><b>العقد</b>${esc(i.contractNo||'')}</div><div><b>قيمة الإيجار</b>${money(rent)}</div><div><b>الضريبة على الإيجار</b>${money(v)}</div><div><b>الخدمات الإضافية</b>${money(services)}</div></div><div class="total">الإجمالي: ${money(total)}</div>`;printSingle('فاتورة ضريبية — '+i.no,body)}
 function printService(id){let x=db.services.find(s=>s.id==id);if(!x)return;let body=`<div class="meta"><div><b>رقم الحركة</b>${esc(x.no)}</div><div><b>التاريخ</b>${esc(x.date)}</div><div><b>المستأجر</b>${esc(x.tenant)}</div><div><b>العقد</b>${esc(contract(x.contractId)?.no||'')}</div><div><b>الخدمة</b>${esc(x.serviceName)}</div><div><b>الحساب</b>${esc(x.accountCode||'4200')}</div><div><b>المبلغ</b>${money(x.amount)}</div><div><b>VAT</b>${money(x.vat||0)}</div></div><div style="margin-top:15px"><b>البيان:</b> ${esc(x.note||'')}</div>`;printSingle('خدمة مستأجر — '+x.no,body)}
 function printDue(cid,no){let x=dueFor(contract(cid)).find(v=>v.no==no);if(!x)return;let rem=Math.max(0,x.total-collectedFor(x));let body=`<div class="meta"><div><b>تاريخ الاستحقاق</b>${esc(x.date)}</div><div><b>المستأجر</b>${esc(x.tenant)}</div><div><b>العقد</b>${esc(contract(x.contractId)?.no||'')}</div><div><b>رقم الدفعة</b>${x.no}/10</div><div><b>الإيجار</b>${money(x.rent)}</div><div><b>الخدمات</b>${money(x.services)}</div><div><b>رسوم العقد</b>${money(x.contractFee||0)}</div><div><b>الضريبة</b>${money(x.vat||0)}</div></div><div class="total">المستحق المتبقي: ${money(rem)}</div>`;printSingle('استحقاق — '+x.tenant,body)}
 function printTenant(id){let t=tenant(id);if(!t)return;let cs=db.contracts.filter(c=>c.tenantId==id);let body=`<div class="meta"><div><b>كود العميل</b>${esc(t.code||'')}</div><div><b>اسم المستأجر</b>${esc(t.name)}</div><div><b>الرقم الضريبي</b>${esc(t.vatNo||'')}</div><div><b>الهاتف</b>${esc(t.phone||'')}</div></div><h3>العقود</h3><table><thead><tr><th>العقد</th><th>المكتب</th><th>من</th><th>إلى</th></tr></thead><tbody>${cs.map(c=>`<tr><td>${esc(c.no)}</td><td>${esc(c.office)}</td><td>${esc(c.start)}</td><td>${esc(c.end)}</td></tr>`).join('')||'<tr><td colspan="4">لا توجد عقود</td></tr>'}</tbody></table>`;printSingle('بيانات مستأجر — '+t.name,body)}
